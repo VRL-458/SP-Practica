@@ -12,7 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
+using LNAT.businesslogic.Managers.Exceptions;
+using System.Linq.Expressions;
 
 namespace LNAT.businesslogic.Managers
 {
@@ -34,10 +35,11 @@ namespace LNAT.businesslogic.Managers
             }
             catch (Exception ex)
             {
-                /*
-                BackingServiceException bsEx = new BackingServiceException(ex.Message);
-                Log.Error(bsEx.GetMessageLogs("Configurin file Path"));
-                */
+                
+                PacientesExceptions bsEx = new PacientesExceptions(ex.Message);
+                Log.Error(bsEx.GetMensajeforLogs("Configuring file Path"));
+
+                throw bsEx;
 
             }
 
@@ -64,31 +66,37 @@ namespace LNAT.businesslogic.Managers
         }
         public void remove(int ci)
         {
-            try
+            if (pacientes.TryGetValue(ci, out Pacientes paciente))
             {
                 pacientes.Remove(ci);
                 EscribirPacientesEnArchivo();
             }
-            catch (Exception ex)
+            else
             {
-                
-                Log.Error($"Error ocurrido {ex}");
-                
+                PacientesExceptions bsEx = new PacientesExceptions();
+                Log.Error(bsEx.GetMensajeforLogs("Remove by Ci"));
+
+                throw new Exception("Error removing CI");
             }
+           
         }
 
-        public Pacientes obtenerPacienteCI(int ci)
+        public  Pacientes obtenerPacienteCI(int ci)
         {
             try
             {
                 return pacientes[ci];
             }
-            catch (Exception ex)
+            
+            catch (Exception ex) 
             {
-                
-                Log.Error($"Error ocurrido {ex}");
-                return null;
+                PacientesExceptions bsEx = new PacientesExceptions(ex.Message);
+                Log.Error(bsEx.GetMensajeforLogs("obtenerPacienteCI"));
+
+                throw bsEx;
+
             }
+            
            
         }
         public string updatebyCiApellido(int ci, string apellido)
@@ -101,39 +109,37 @@ namespace LNAT.businesslogic.Managers
             }
             catch (Exception ex)
             {
-                return "Patient not found";
+                PacientesExceptions bsEx = new PacientesExceptions(ex.Message);
+                Log.Error(bsEx.GetMensajeforLogs("updatebyCiApellido"));
+
+                throw bsEx;
             }
         }
-        public string updatebyCiNombre(int ci, string nombre)
+        public void updatebyCiNombre(int ci, string nombre)
         {
-            if (pacientes[ci] != null)
+            try
             {
                 pacientes[ci].nombre = nombre;
                 EscribirPacientesEnArchivo();
-
-
-                return "Datos actualizados";
-
             }
-            else
-                return "Patient not found";
+            catch (Exception ex) 
+            {
+                PacientesExceptions bsEx = new PacientesExceptions(ex.Message);
+                Log.Error(bsEx.GetMensajeforLogs("updatebyCiNombre"));
+
+                throw bsEx;
+            }
+            
         }
         public Dictionary<int, Pacientes> ObtenerPacientes()
         {
             return pacientes;
         }
-        //funcion add patientes a una lista --
-        //eliminar por Ci--
-        //get by CI--
-        //update by CI--
-        // get paticientes--
-        //leer archivo txt
-        //borrar archivo
 
         public void LoadPatientsFromFile()
         {
 
-            if (File.Exists(_filePath))
+            try
             {
                 var lines = File.ReadAllLines(_filePath);
                 foreach (var line in lines)
@@ -149,8 +155,12 @@ namespace LNAT.businesslogic.Managers
                     pacientes.Add(int.Parse(parts[2]), patient);
                 }
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
         }
-
         public void EscribirPacientesEnArchivo()
         {
             using (StreamWriter writer = new StreamWriter(_filePath, false)) // El segundo parámetro 'false' significa que sobreescribirá el archivo si existe

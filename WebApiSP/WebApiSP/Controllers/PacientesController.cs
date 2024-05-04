@@ -16,11 +16,7 @@ namespace WebApiSP.Controllers
         public ControlerPatients(PacientesManger managerPatients)
         {
             _managerPatients = managerPatients;
-
-            //funcion leer archivo
-            //recorrer cada paciene y agregue
         }
-        //ManagerPatients pacientes = new ManagerPatients(); revisar
         // GET: api/<PATIENTS>
         [HttpGet]
         public IEnumerable<Pacientes> Get()

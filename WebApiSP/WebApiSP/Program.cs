@@ -1,4 +1,5 @@
 using LNAT.businesslogic.Managers;
+using LNAT.WebApiSP.Middlewares;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +24,7 @@ var app = builder.Build();
 if (app.Environment.EnvironmentName == "QA")
 {
     Log.Logger = new LoggerConfiguration()
-    .WriteTo.File(app.Configuration.GetSection("Paths").GetSection("Filelocation").Value, rollingInterval: RollingInterval.Day)
+    .WriteTo.File(app.Configuration.GetSection("Paths").GetSection("FileLocation").Value, rollingInterval: RollingInterval.Day)
     .CreateLogger();
     Log.Information("Initializing the server environment QA!!");
 }
@@ -31,16 +32,22 @@ else
 {
     Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File(app.Configuration.GetSection("Paths").GetSection("Filelocation").Value, rollingInterval: RollingInterval.Day)
+    .WriteTo.File(app.Configuration.GetSection("Paths").GetSection("FileLocation").Value, rollingInterval: RollingInterval.Day)
     .CreateLogger();
     Log.Information("Initializing the server not environment QA !!");
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.EnvironmentName == "QA" || app.Environment.EnvironmentName == "UAT")
+
+app.UseExceptionHandlerMiddleware();
+//app.UseExceptionHandlerMidfleware();
+if (app.Environment.EnvironmentName == "QA" || app.Environment.EnvironmentName == "UAT" || app.Environment.EnvironmentName == "Development")
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+        c.DocumentTitle = app.Configuration.GetSection("ApplicationSettings").GetSection("ApplicationName").Value
+        );
+        
 }
 
 app.UseHttpsRedirection();

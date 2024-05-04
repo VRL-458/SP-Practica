@@ -1,4 +1,5 @@
+Kevin,Cazon,245423542,A+
 mauricio,terceros,123456,O+
+john, smith,666666, A-
 Daniel,Torico,659820,O+
 Juan,Perez,1234,A+
-Juan,Perez,999,AB+
