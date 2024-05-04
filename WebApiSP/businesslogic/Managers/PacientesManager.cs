@@ -1,4 +1,4 @@
-﻿
+﻿using Serilog;
 using LNAT.businesslogic.Models;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -71,9 +71,9 @@ namespace LNAT.businesslogic.Managers
             }
             catch (Exception ex)
             {
-                /*
+                
                 Log.Error($"Error ocurrido {ex}");
-                */
+                
             }
         }
 
@@ -85,10 +85,8 @@ namespace LNAT.businesslogic.Managers
             }
             catch (Exception ex)
             {
-                /*
+                
                 Log.Error($"Error ocurrido {ex}");
-
-                */
                 return null;
             }
            

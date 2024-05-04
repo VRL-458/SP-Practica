@@ -1,0 +1,6 @@
+Kevin,Cazon,245423542,A+
+mauricio,terceros,123456,O+
+Daniel,Torico,659820,O+
+Juan,Perez,1234,A+
+Fernando,Gomez,999,AB+
+Jhoel,Burgoa,656543,AB+
