@@ -14,6 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using LNAT.businesslogic.Managers.Exceptions;
 using System.Linq.Expressions;
+using System.Net.Http.Json;
 
 namespace LNAT.businesslogic.Managers
 {
@@ -46,19 +47,20 @@ namespace LNAT.businesslogic.Managers
             LoadPatientsFromFile();
 
         }
-        public void addPorParametros(string nombre, string apellido, int ci)
+        public void addPorParametros(string nombre, string apellido, int ci, string code)
         {
             pacientes.Add(ci, new Pacientes()
             {
                 nombre = nombre,
                 apellido = apellido,
                 Ci = ci,
+                Code = code,
 
             }
             );
             EscribirPacientesEnArchivo();
         }
-        public void addPaciente(Pacientes paciente)
+        public async void addPaciente(Pacientes paciente)
         {
             paciente.GetRandomBloodGroup();
             pacientes.Add(paciente.Ci, paciente);
@@ -136,6 +138,40 @@ namespace LNAT.businesslogic.Managers
             return pacientes;
         }
 
+        //logica del tercer trabajo
+        public async Task<string> ObtenerPaciente(string nombre, string apellido, int ci)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5080/");
+                string url = $"api/Pacientes/{nombre}/{apellido}/{ci}";
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("PATIENT CODE recibido: " + responseBody);
+
+                    // Aquí debes implementar la lógica para escribir el PATIENT CODE en tu archivo de datos
+                    addPaciente (new Pacientes
+                    {
+                        nombre = nombre,
+                        apellido = apellido,
+                        Ci = ci,
+                        Code = responseBody,    
+                            }
+                    );
+                    return responseBody;
+                }
+                else
+                {
+                    // Manejar el error, lanzar excepción, etc.
+                    return null;
+                }
+            }
+        }
+
+
         public void LoadPatientsFromFile()
         {
 
@@ -151,6 +187,7 @@ namespace LNAT.businesslogic.Managers
                         apellido = parts[1],
                         Ci = int.Parse(parts[2]),
                         tipoSangre = parts[3],
+                        Code = parts[4],
                     };
                     pacientes.Add(int.Parse(parts[2]), patient);
                 }
@@ -167,7 +204,7 @@ namespace LNAT.businesslogic.Managers
             {
                 foreach (Pacientes paciente in pacientes.Values)
                 {
-                    string linea = $"{paciente.nombre},{paciente.apellido},{paciente.Ci},{paciente.tipoSangre}";
+                    string linea = $"{paciente.nombre},{paciente.apellido},{paciente.Ci},{paciente.tipoSangre},{paciente.Code}";
                     writer.WriteLine(linea);
                 }
             }

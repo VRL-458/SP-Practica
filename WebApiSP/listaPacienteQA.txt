@@ -1,4 +1,5 @@
-mauricio,terceros,123456,O+
-Daniel,Torico,659820,O+
-Juan,Perez,1234,A+
-Juan,Perez,999,AB+
+mauricio,terceros,123456,O+,mt123456
+Daniel,Torico,659820,O+,ss12
+Juan,Perez,1234,A+,ss12
+Juan,Perez,999,AB+,s12
+string,string,91,AB+,ss91

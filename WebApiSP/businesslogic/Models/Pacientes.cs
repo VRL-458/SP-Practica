@@ -15,6 +15,7 @@ namespace LNAT.businesslogic.Models
         public string apellido { get; set; }
         public int Ci { get; set; }
         public string tipoSangre { get; set; }
+        public string Code { get; set; }
         public Pacientes()
         {
 

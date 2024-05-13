@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LNAT.businesslogic.Managers;
 using LNAT.businesslogic.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,10 +20,11 @@ namespace WebApiSP.Controllers
         }
         // GET: api/<PATIENTS>
         [HttpGet]
-        public IEnumerable<Pacientes> Get()
+        public IEnumerable<Pacientes> GetCode()
         {
             return _managerPatients.ObtenerPacientes().Values;
         }
+
 
         // GET api/<PATIENTS>/5
         [HttpGet("{id}")]
@@ -35,7 +37,7 @@ namespace WebApiSP.Controllers
         [HttpPost]
         public void Post([FromBody] Pacientes value)
         {
-            _managerPatients.addPaciente(value);
+            _managerPatients.ObtenerPaciente(value.nombre, value.apellido, value.Ci);
         }
 
         // PUT api/<PATIENTS>/5
