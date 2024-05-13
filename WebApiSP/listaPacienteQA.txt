@@ -3,3 +3,5 @@ Daniel,Torico,659820,O+,ss12
 Juan,Perez,1234,A+,ss12
 Juan,Perez,999,AB+,s12
 string,string,91,AB+,ss91
+Daniel,Torrico,98765,O+,DT98765
+string,string,6534,A-,ss6534

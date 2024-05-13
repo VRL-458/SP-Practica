@@ -35,9 +35,9 @@ namespace WebApiSP.Controllers
 
         // POST api/<PATIENTS>
         [HttpPost]
-        public void Post([FromBody] Pacientes value)
+        public async void Post([FromBody] Pacientes value)
         {
-            _managerPatients.ObtenerPaciente(value.nombre, value.apellido, value.Ci);
+            await _managerPatients.ObtenerPaciente(value.nombre, value.apellido, value.Ci);
         }
 
         // PUT api/<PATIENTS>/5

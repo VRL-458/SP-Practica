@@ -143,8 +143,8 @@ namespace LNAT.businesslogic.Managers
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:5080/");
-                string url = $"api/Pacientes/{nombre}/{apellido}/{ci}";
+                client.BaseAddress = new Uri($"{_configuration.GetSection("Paths").GetSection("Api3").Value}");
+                string url = $"{_configuration.GetSection("Paths").GetSection("ruta").Value}{nombre}/{apellido}/{ci}";
                 HttpResponseMessage response = await client.GetAsync(url);
 
                 if (response.IsSuccessStatusCode)
@@ -153,20 +153,19 @@ namespace LNAT.businesslogic.Managers
                     Console.WriteLine("PATIENT CODE recibido: " + responseBody);
 
                     // Aquí debes implementar la lógica para escribir el PATIENT CODE en tu archivo de datos
-                    addPaciente (new Pacientes
+                    addPaciente(new Pacientes
                     {
                         nombre = nombre,
                         apellido = apellido,
                         Ci = ci,
-                        Code = responseBody,    
-                            }
+                        Code = responseBody,
+                    }
                     );
                     return responseBody;
                 }
                 else
                 {
-                    // Manejar el error, lanzar excepción, etc.
-                    return null;
+                    throw new Exception("Conection faild trying to get on api3");
                 }
             }
         }
